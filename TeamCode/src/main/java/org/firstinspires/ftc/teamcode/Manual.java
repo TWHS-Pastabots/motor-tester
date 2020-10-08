@@ -4,10 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "Manual", group = "Linear OpMode")
+@TeleOp(name = "Manual")
 public class Manual extends OpMode {
 
-    /* Declare OpMode members. */
     RobotHardware robot = new RobotHardware();
     ElapsedTime runTime = new ElapsedTime();
     double slowCon = 0.8;
@@ -16,8 +15,8 @@ public class Manual extends OpMode {
     // http://jkorpela.fi/chars/spaces.html
 
     int barWidth = 34;
-    String spaceChar = "\u2591"; // "   " = 1/4em * 3
-    String barChar = "\u2588"; // "█" = ~1em
+    static final String space = "\u2591"; // "   " = 1/4em * 3
+    static final String bar = "\u2588"; // "█" = ~1em
 
     //run once on init()
     @Override
@@ -42,6 +41,7 @@ public class Manual extends OpMode {
 
     /**
      * Like Math.max, but dependent on magnitude (ignores signage)
+     *
      * @return The float with the highest magnitude, preferring param A.
      */
     public static float maxMagnitude(float a, float b) {
@@ -62,7 +62,7 @@ public class Manual extends OpMode {
      * @return A human readable representation of a positive duration
      */
     public static String getHumanDuration(float duration) {
-        if(duration > 3600) {
+        if (duration > 3600) {
             int hours = Math.round(duration / 3600);
             int minutes = Math.round((duration % 3600) / 60);
             int seconds = Math.round(duration % 60);
@@ -89,9 +89,9 @@ public class Manual extends OpMode {
         int barCount = Math.round(Math.abs(level) * halfWidth);
 
         // Credit to Matt K. for the idea - expanding the bar to show signage like a numberline
-        builder.append(repeat(this.spaceChar, halfWidth));
-        builder.append(repeat(this.barChar, barCount));
-        builder.append(repeat(this.spaceChar, halfWidth - barCount));
+        builder.append(repeat(space, halfWidth));
+        builder.append(repeat(bar, barCount));
+        builder.append(repeat(space, halfWidth - barCount));
         builder.append("]");
 
         if (level < 0)
@@ -100,14 +100,24 @@ public class Manual extends OpMode {
         return builder.toString();
     }
 
+    /**
+     * Easing function from https://easings.net/#easeInSine
+     *
+     * @param number A value in the 0.0 to 1.0 range
+     * @return A value with the easeInSine easing function applied
+     */
+    public static float easeInSine(float number) {
+        return (float) (1 - Math.cos((number * Math.PI) / 2));
+    }
+
     // Loop on start()
     @Override
     public void loop() {
-        // Calculate inputs
-        float inputOne = maxMagnitude(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        float inputTwo = maxMagnitude(gamepad1.right_stick_x, gamepad1.right_stick_y);
-        float inputThree = maxMagnitude(gamepad2.left_stick_x, gamepad2.left_stick_y);
-        float inputFour = maxMagnitude(gamepad2.right_stick_x, gamepad2.right_stick_y);
+        // Calculate inputs using easeInSine easing function
+        float inputOne = easeInSine(maxMagnitude(gamepad1.left_stick_x, gamepad1.left_stick_y));
+        float inputTwo = easeInSine(maxMagnitude(gamepad1.right_stick_x, gamepad1.right_stick_y));
+        float inputThree = easeInSine(maxMagnitude(gamepad2.left_stick_x, gamepad2.left_stick_y));
+        float inputFour = easeInSine(maxMagnitude(gamepad2.right_stick_x, gamepad2.right_stick_y));
 
         // Set power to inputs
         robot.motorOne.setPower(inputOne);
