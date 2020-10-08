@@ -63,13 +63,13 @@ public class Manual extends OpMode {
      */
     public static String getHumanDuration(float duration) {
         if (duration > 3600) {
-            int hours = Math.round(duration / 3600);
-            int minutes = Math.round((duration % 3600) / 60);
-            int seconds = Math.round(duration % 60);
+            int hours = (int) (duration / 3600);
+            int minutes = (int) ((duration % 3600) / 60);
+            int seconds = (int) (duration % 60);
             return String.format("%d hours, %d minutes and %d seconds", hours, minutes, seconds);
         } else if (duration > 60) {
-            int minutes = Math.round(duration / 60);
-            int seconds = Math.round(duration % 60);
+            int minutes = (int) (duration / 60);
+            int seconds = (int) (duration % 60);
             return String.format("%d minutes and %d seconds", minutes, seconds);
         } else if (duration > 0) {
             return String.format("%d seconds", Math.round(duration));
