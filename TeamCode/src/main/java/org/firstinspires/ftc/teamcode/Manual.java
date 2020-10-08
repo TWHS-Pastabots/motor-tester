@@ -33,16 +33,25 @@ public class Manual extends OpMode {
         telemetry.addData("Run Time", "reset");
     }
 
+    // Math.max, but dependent on magnitude (ignores signage)
+    public static float maxMagnitude(float a, float b) {
+        return Math.abs(a) >= Math.abs(b) ? a : b;
+    }
+
     // Loop on start()
     @Override
     public void loop() {
         // Calculate inputs
-        float inputOne = Math.max(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        float inputTwo = Math.max(gamepad1.right_stick_x, gamepad1.right_stick_y);
+        float inputOne = maxMagnitude(gamepad1.left_stick_x, gamepad1.left_stick_y);
+        float inputTwo = maxMagnitude(gamepad1.right_stick_x, gamepad1.right_stick_y);
+        float inputThree = maxMagnitude(gamepad2.left_stick_x, gamepad2.left_stick_y);
+        float inputFour = maxMagnitude(gamepad2.right_stick_x, gamepad2.right_stick_y);
 
         // Set power to inputs
         robot.motorOne.setPower(inputOne);
         robot.motorTwo.setPower(inputTwo);
+        robot.motorThree.setPower(inputThree);
+        robot.motorFour.setPower(inputFour);
 
         // Print input telemetry, power level bars
         telemetry.addData("Elapsed", runTime.seconds());
