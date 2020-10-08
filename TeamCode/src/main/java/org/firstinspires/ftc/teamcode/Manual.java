@@ -40,17 +40,33 @@ public class Manual extends OpMode {
         telemetry.addData("Run Time", "reset");
     }
 
-    // Math.max, but dependent on magnitude (ignores signage)
+    /**
+     * Like Math.max, but dependent on magnitude (ignores signage)
+     * @return The float with the highest magnitude, preferring param A.
+     */
     public static float maxMagnitude(float a, float b) {
         return Math.abs(a) >= Math.abs(b) ? a : b;
     }
 
+    /**
+     * @param sub The String to be repeated
+     * @param repeat The number of times to repeat the String
+     * @return A new string made out of the sub string repeated a certain number of times.
+     */
+    public static String repeat(String sub, int repeat) {
+        return new String(new char[repeat]).replace("\0", sub);
+    }
+
+    /**
+     * Create a progressbar out of Unicode characters.
+     * @param level The level of the progressbar to be rendered.
+     * @return A progressbar made out of Unicode block and space characters with a certain percent filling.
+     */
     public String createLevel(float level) {
         int barCount = Math.round(Math.abs(level) * this.barWidth);
-        String bars = new String(new char[barCount]).replace("\0", this.barChar);
-        String spaces = new String(new char[this.barWidth - barCount]).replace("\0", this.spaceChar);
-        // TODO: Implement signed input handling
-        return "+ [" + bars + spaces + "]";
+        String bars = repeat(this.barChar, barCount);
+        String spaces = repeat(this.spaceChar, this.barWidth - barCount);
+        return (level >= 0 ? "+" : "-") + " [" + bars + spaces + "]";
     }
 
     // Loop on start()
