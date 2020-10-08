@@ -12,6 +12,13 @@ public class Manual extends OpMode {
     ElapsedTime runTime = new ElapsedTime();
     double slowCon = 0.8;
 
+    // https://charbase.com/block/block-elements
+    // http://jkorpela.fi/chars/spaces.html
+
+    int barWidth = 30;
+    String spaceChar = "\u2005\u2005\u2005"; // "   " = 1/4em * 3
+    String barChar = "\u2588"; // "█" = ~1em
+
     //run once on init()
     @Override
     public void init() {
@@ -38,12 +45,12 @@ public class Manual extends OpMode {
         return Math.abs(a) >= Math.abs(b) ? a : b;
     }
 
-    public static String createLevel(float level) {
-        int barCount = Math.round(level * 30);
-        String bars = new String(new char[barCount]).replace("\0", "█");
-//        String spaces = new String(new char[75 - barCount]).replace("\0", " ");
-//        return "[" + bars + spaces + "]";
-        return bars;
+    public String createLevel(float level) {
+        int barCount = Math.round(Math.abs(level) * this.barWidth);
+        String bars = new String(new char[barCount]).replace("\0", this.barChar);
+        String spaces = new String(new char[this.barWidth - barCount]).replace("\0", this.spaceChar);
+        // TODO: Implement signed input handling
+        return "+ [" + bars + spaces + "]";
     }
 
     // Loop on start()
@@ -67,7 +74,6 @@ public class Manual extends OpMode {
         telemetry.addLine(createLevel(inputTwo));
         telemetry.addLine(createLevel(inputThree));
         telemetry.addLine(createLevel(inputFour));
-
         telemetry.update();
     }
 

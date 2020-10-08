@@ -13,7 +13,7 @@ We have set our standard configuration to use the 0, 1, 2, and 3 (zero indexed) 
 We also use the 20:1 REV Robotics HD Hex Motor, the 40:1 REV Robotics HD Hex Motor, and the REV Hex Core Motor.
 
 | Slot ID | Motor Name | DeviceName |
-| --- | --- | --- |
+| ------- | ---------- | ---------- |
 | 0 | REV Robotics Hex Core Motor | motorOne |
 | 1 | 20:1 REV Robotics HD Hex Motor | motorTwo |
 | 2 | 20:1 REV Robotics HD Hex Motor | motorThree |
