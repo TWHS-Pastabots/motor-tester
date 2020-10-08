@@ -38,6 +38,14 @@ public class Manual extends OpMode {
         return Math.abs(a) >= Math.abs(b) ? a : b;
     }
 
+    public static String createLevel(float level) {
+        int barCount = Math.round(level * 30);
+        String bars = new String(new char[barCount]).replace("\0", "█");
+//        String spaces = new String(new char[75 - barCount]).replace("\0", " ");
+//        return "[" + bars + spaces + "]";
+        return bars;
+    }
+
     // Loop on start()
     @Override
     public void loop() {
@@ -55,8 +63,10 @@ public class Manual extends OpMode {
 
         // Print input telemetry, power level bars
         telemetry.addData("Elapsed", runTime.seconds());
-        telemetry.addData("Input 1:", inputOne);
-        telemetry.addData("Input 2:", inputTwo);
+        telemetry.addLine(createLevel(inputOne));
+        telemetry.addLine(createLevel(inputTwo));
+        telemetry.addLine(createLevel(inputThree));
+        telemetry.addLine(createLevel(inputFour));
 
         telemetry.update();
     }
