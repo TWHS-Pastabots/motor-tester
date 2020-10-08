@@ -15,8 +15,8 @@ public class Manual extends OpMode {
     // https://charbase.com/block/block-elements
     // http://jkorpela.fi/chars/spaces.html
 
-    int barWidth = 30;
-    String spaceChar = "\u2005\u2005\u2005"; // "   " = 1/4em * 3
+    int barWidth = 34;
+    String spaceChar = "\u2591"; // "   " = 1/4em * 3
     String barChar = "\u2588"; // "█" = ~1em
 
     //run once on init()
@@ -49,7 +49,7 @@ public class Manual extends OpMode {
     }
 
     /**
-     * @param sub The String to be repeated
+     * @param sub    The String to be repeated
      * @param repeat The number of times to repeat the String
      * @return A new string made out of the sub string repeated a certain number of times.
      */
@@ -58,15 +58,46 @@ public class Manual extends OpMode {
     }
 
     /**
+     * @param duration The duration of the time to be printed
+     * @return A human readable representation of a positive duration
+     */
+    public static String getHumanDuration(float duration) {
+        if(duration > 3600) {
+            int hours = Math.round(duration / 3600);
+            int minutes = Math.round((duration % 3600) / 60);
+            int seconds = Math.round(duration % 60);
+            return String.format("%d hours, %d minutes and %d seconds", hours, minutes, seconds);
+        } else if (duration > 60) {
+            int minutes = Math.round(duration / 60);
+            int seconds = Math.round(duration % 60);
+            return String.format("%d minutes and %d seconds", minutes, seconds);
+        } else if (duration > 0) {
+            return String.format("%d seconds", Math.round(duration));
+        }
+        return "";
+    }
+
+    /**
      * Create a progressbar out of Unicode characters.
+     *
      * @param level The level of the progressbar to be rendered.
      * @return A progressbar made out of Unicode block and space characters with a certain percent filling.
      */
     public String createLevel(float level) {
-        int barCount = Math.round(Math.abs(level) * this.barWidth);
-        String bars = repeat(this.barChar, barCount);
-        String spaces = repeat(this.spaceChar, this.barWidth - barCount);
-        return (level >= 0 ? "+" : "-") + " [" + bars + spaces + "]";
+        StringBuilder builder = new StringBuilder("[");
+        int halfWidth = this.barWidth / 2;
+        int barCount = Math.round(Math.abs(level) * halfWidth);
+
+        // Credit to Matt K. for the idea - expanding the bar to show signage like a numberline
+        builder.append(repeat(this.spaceChar, halfWidth));
+        builder.append(repeat(this.barChar, barCount));
+        builder.append(repeat(this.spaceChar, halfWidth - barCount));
+        builder.append("]");
+
+        if (level < 0)
+            builder.reverse();
+
+        return builder.toString();
     }
 
     // Loop on start()
@@ -85,7 +116,7 @@ public class Manual extends OpMode {
         robot.motorFour.setPower(inputFour);
 
         // Print input telemetry, power level bars
-        telemetry.addData("Elapsed", runTime.seconds());
+        telemetry.addData("Started", getHumanDuration((float) runTime.seconds()) + " ago");
         telemetry.addLine(createLevel(inputOne));
         telemetry.addLine(createLevel(inputTwo));
         telemetry.addLine(createLevel(inputThree));
