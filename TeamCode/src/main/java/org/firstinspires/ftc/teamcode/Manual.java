@@ -88,7 +88,7 @@ public class Manual extends OpMode {
         int halfWidth = this.barWidth / 2;
         int barCount = Math.round(Math.abs(level) * halfWidth);
 
-        // Credit to Matt K. for the idea - expanding the bar to show signage like a numberline
+        // Credit to Matt P. (@BSFishy) for the idea - expanding the bar to show signage like a numberline
         builder.append(repeat(space, halfWidth));
         builder.append(repeat(bar, barCount));
         builder.append(repeat(space, halfWidth - barCount));
