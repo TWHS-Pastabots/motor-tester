@@ -4,12 +4,19 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.Locale;
+
 @TeleOp(name = "Manual")
 public class Manual extends OpMode {
 
     RobotHardware robot = new RobotHardware();
     ElapsedTime runTime = new ElapsedTime();
     double slowCon = 0.8;
+
+    int motorOneEncoderPosition = 0;
+    int motorTwoEncoderPosition = 0;
+    int motorThreeEncoderPosition = 0;
+    int motorFourEncoderPosition = 0;
 
     // https://charbase.com/block/block-elements
     // http://jkorpela.fi/chars/spaces.html
@@ -63,16 +70,16 @@ public class Manual extends OpMode {
      */
     public static String getHumanDuration(float duration) {
         if (duration > 3600) {
-            int hours = (int) (duration / 3600);
-            int minutes = (int) ((duration % 3600) / 60);
-            int seconds = (int) (duration % 60);
-            return String.format("%d hours, %d minutes and %d seconds", hours, minutes, seconds);
+            int hours = Math.round(duration / 3600);
+            int minutes = Math.round((duration % 3600) / 60);
+            int seconds = Math.round(duration % 60);
+            return String.format(Locale.ENGLISH, "%d hours, %d minutes and %d seconds", hours, minutes, seconds);
         } else if (duration > 60) {
-            int minutes = (int) (duration / 60);
-            int seconds = (int) (duration % 60);
-            return String.format("%d minutes and %d seconds", minutes, seconds);
+            int minutes = Math.round(duration / 60);
+            int seconds = Math.round(duration % 60);
+            return String.format(Locale.ENGLISH, "%d minutes and %d seconds", minutes, seconds);
         } else if (duration > 0) {
-            return String.format("%d seconds", Math.round(duration));
+            return String.format(Locale.ENGLISH, "%d seconds", Math.round(duration));
         }
         return "";
     }
@@ -107,7 +114,7 @@ public class Manual extends OpMode {
      * @return A value with the easeInSine easing function applied
      */
     public static float easeInSine(float number) {
-        return (float) (1 - Math.cos((number * Math.PI) / 2));
+        return number * number * number;
     }
 
     // Loop on start()
@@ -131,6 +138,14 @@ public class Manual extends OpMode {
         telemetry.addLine(createLevel(inputTwo));
         telemetry.addLine(createLevel(inputThree));
         telemetry.addLine(createLevel(inputFour));
+
+        // Encoder information
+        if (robot.motorOne != null) {
+            int encoderPosition = robot.motorOne.getCurrentPosition();
+            telemetry.addLine(String.format(Locale.ENGLISH, "Motor One Change: %d", encoderPosition - this.motorOneEncoderPosition));
+            this.motorOneEncoderPosition = encoderPosition;
+        }
+
         telemetry.update();
     }
 
